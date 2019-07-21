@@ -73,6 +73,13 @@ sensorPosX = 23;
 sensorPosY = 2.8;
 sensorThickness = 1.5;
 
+//frontLed
+ledHeight = 3;
+ledWidth = 3;
+ledThickness = caseThickness;
+ledPosX = 27.5;
+ledPosY = 29.5;
+
 //display elements
 bottomPcbCover();
 translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+bottomPcbThickness])topCover();
@@ -163,6 +170,7 @@ difference(){
 
     translate([jumperPosX,jumperPosY,0])cube([jumperWidth,jumperHeight,jumperThickness]);
     
+    translate([ledPosX,ledPosY,0])cube([ledHeight,ledHeight,ledThickness]);
     
 }
 
