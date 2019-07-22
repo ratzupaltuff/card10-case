@@ -1,4 +1,4 @@
-$fa = 0.5;
+//$fa = 0.5;
 $fs = 0.5;
 
 //printer
@@ -13,6 +13,7 @@ bottomPcbHeight = 38;
 bottomEdgeDiameter = 4.5;
 
 //toppcb
+topCaseThickness = 2;
 topPcbWidth = bottomPcbWidth;
 topPcbHeight = 35.5;
 topPcbEdgeDiameter = 2.75;
@@ -43,12 +44,17 @@ button4Y = 13-printerOffset/2;
 //display
 displayHeight = 13.5+printerOffset;
 displayWidth = 28+printerOffset;
-displayThickness = 2;
+displayThickness = 1.6;
 displayCableHeight = 9+printerOffset;
 displayCableWidth = 2+printerOffset;
 displayPositionX = 10-printerOffset/2;
-displayPositionY = 9.5-printerOffset/2;
+displayPositionY = 12-printerOffset/2;
 displayCablePositonY = 2-printerOffset/2;
+
+displayBacklightHeight = 11;
+displayBacklightWidth = 22;
+displayBacklightPosX = 4;
+displayBacklightPosY = 1;
 
 
 //screws
@@ -58,8 +64,8 @@ topScrewDistanceX = bottomScrewDistanceX;
 topScrewDistanceY = 3.25;
 ScrewDistanceX = 39;
 ScrewDistanceY = 29;
-screwHeadDiameter = 3.8;
-screwHeadHeight = 1.5;
+screwHeadDiameter = 4;
+screwHeadHeight = 1;
 screwDiameter = 2;
 
 //spacer
@@ -69,9 +75,9 @@ topPcbOffset = bottomScrewDistanceY-topScrewDistanceY;
 //IRsensor
 sensorHeight = 3.5 + printerOffset;
 sensorWidth = 5.5 + printerOffset;
-sensorPosX = 23 - printerOffset/2;
-sensorPosY = 2.8 -printerOffset/2;
-sensorThickness = 1.5;
+sensorPosX = 23.2 - printerOffset/2; //23
+sensorPosY = 2.6 -printerOffset/2; //2.8
+sensorThickness = topCaseThickness; //1.5
 
 //frontLed
 ledHeight = 3;
@@ -79,11 +85,6 @@ ledWidth = 3;
 ledThickness = caseThickness;
 ledPosX = 27.5;
 ledPosY = 29.5;
-
-//display elements
-bottomPcbCover();
-translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+bottomPcbThickness])topCover();
-//topCover();
 
 //jumperSpare
 jumperHeight = 2+printerOffset;
@@ -103,21 +104,27 @@ klickerCylinderScaleFactor = 0.5;
 klickerAngle = 30;
 
 
+//display elements
+//color("grey")bottomPcbCover();
+//translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+bottomPcbThickness])topCover();
+//topCover();
+//sideCoverInnerNegative();
+
 module bottomPcbCover(){
 difference(){
     cube([bottomPcbWidth,bottomPcbHeight,caseThickness]);
 
     //screw cuttings
-    translate([bottomScrewDistanceX,bottomScrewDistanceY,0])cylinder(,d1=screwHeadDiameter+printerOffset,d2=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([bottomScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
 
 
-    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,0])cylinder(,d1=screwHeadDiameter+printerOffset,d2=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
 
 
-    translate([bottomScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])cylinder(,d1=screwHeadDiameter+printerOffset,d2=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([bottomScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
 
 
-    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])cylinder(,d1=screwHeadDiameter+printerOffset,d2=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
     
     //contactPinCuttings
     translate([contactPinDistanceX,0,0])cube([contactPinWidth,contactPinHeigth,caseThickness]);
@@ -141,15 +148,15 @@ module bottomEdgeNegative(){
 
 module topEdgeNegative(){
     translate([-topPcbEdgeDiameter,-topPcbEdgeDiameter,0]) difference(){
-        cube([topPcbEdgeDiameter,topPcbEdgeDiameter,caseThickness]);
-        cylinder(r=topPcbEdgeDiameter, h=caseThickness);
+        cube([topPcbEdgeDiameter,topPcbEdgeDiameter,topCaseThickness]);
+        cylinder(r=topPcbEdgeDiameter, h=topCaseThickness);
     }
 }
 
 module topCover(){
 difference(){
     union(){
-        cube([topPcbWidth,topPcbHeight,caseThickness]);
+        cube([topPcbWidth,topPcbHeight,topCaseThickness]);
         translate([button1x,button1Y+buttonWidth,0]) mirror([0,1,0])klicker();
         translate([button2x,button2Y,0]) klicker();
         translate([bottomPcbWidth,button3Y,0]) mirror([1,0,0])klicker();
@@ -157,18 +164,17 @@ difference(){
     }
 
     //screw cuttings
-    translate([topScrewDistanceX,topScrewDistanceY,0])cylinder(,d2=screwHeadDiameter+printerOffset,d1=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([topScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
+
+    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
 
 
-    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY,0])cylinder(,d2=screwHeadDiameter+printerOffset,d1=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([topScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
 
 
-    translate([topScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])cylinder(,d2=screwHeadDiameter+printerOffset,d1=screwDiameter+printerOffset,h=screwHeadHeight);
-
-
-    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])cylinder(,d2=screwHeadDiameter+printerOffset,d1=screwDiameter+printerOffset,h=screwHeadHeight);
+    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
     
-    
+    //button cutting
     translate([button1x,button1Y,0]) buttonNegative();
     translate([button2x,button2Y,0]) buttonNegative();
     translate([button3x,button3Y,0]) buttonNegative();
@@ -204,22 +210,75 @@ module buttonNegative(){
 module displayNegative(){
     cube([displayWidth,displayHeight,displayThickness]);
     translate([-displayCablePositonY,displayCableWidth,0])cube([displayCableWidth,displayCableHeight,displayThickness]);
+    translate([displayBacklightPosX,displayBacklightPosY,displayThickness])cube([displayBacklightWidth,displayBacklightHeight,topCaseThickness-displayThickness]);
 }
 
 module klicker(){
     intersection(){
         union(){
-            translate([-klickerDistance-klickerArmThickness,-klickerLength,0])cube([klickerArmThickness,klickerLength+buttonWidth,caseThickness]);
+            translate([-klickerDistance-klickerArmThickness,-klickerLength,0])cube([klickerArmThickness,klickerLength+buttonWidth,topCaseThickness]);
             intersection(){
-                translate([-klickerDistance-klickerArmThickness-klickerCylinderMaxWidth,0,0])cube([klickerCylinderMaxWidth,buttonWidth,caseThickness]);
+                translate([-klickerDistance-klickerArmThickness-klickerCylinderMaxWidth,0,0])cube([klickerCylinderMaxWidth,buttonWidth,topCaseThickness]);
 
-                translate([-klickerDistance-klickerArmThickness,buttonWidth/2,0])scale([klickerCylinderScaleFactor,1,1])cylinder(d=buttonWidth,h=caseThickness);
+                translate([-klickerDistance-klickerArmThickness,buttonWidth/2,0])scale([klickerCylinderScaleFactor,1,1])cylinder(d=buttonWidth,h=topCaseThickness);
             }
         }
-        translate([-klickerDistance,-klickerLength,0])rotate([0,0,klickerAngle])cube([30,30,caseThickness]);
+        translate([-klickerDistance,-klickerLength,0])rotate([0,0,klickerAngle])cube([30,30,topCaseThickness]);
     }
-    translate([-klickerDistance,-klickerLength,0])cube([klickerDistance,klickerMountWidth,caseThickness]);
+    translate([-klickerDistance,-klickerLength,0])cube([klickerDistance,klickerMountWidth,topCaseThickness]);
+}
+
+module screwNegative(desiredScrewHeadHeight){
+    translate([0,0,desiredScrewHeadHeight-screwHeadHeight])cylinder(d1=screwHeadDiameter+printerOffset,d2=screwDiameter+printerOffset,h=screwHeadHeight);
+    cylinder(d1=screwHeadDiameter+printerOffset,d2=screwHeadDiameter+printerOffset,h=desiredScrewHeadHeight-screwHeadHeight);
+}
+module screwNegativeRotated(desiredScrewHeadHeight){
+    translate([0,0,desiredScrewHeadHeight])rotate([180,0,0])screwNegative(desiredScrewHeadHeight);
 }
 
 
 
+module sideCaseInnerEdgeNegative(){
+    translate([-topPcbEdgeDiameter-printerOffset,-topPcbEdgeDiameter-printerOffset,0]) difference(){
+        cube([topPcbEdgeDiameter+printerOffset*2,topPcbEdgeDiameter+printerOffset*2,sideCoverHeight]);
+        cylinder(r=topPcbEdgeDiameter+printerOffset, h=sideCoverHeight);
+    }
+}
+
+module sideCaseOuterEdgeNegative(){
+    translate([-topPcbEdgeDiameter-printerOffset-sideCoverThickness,-topPcbEdgeDiameter-printerOffset-sideCoverThickness,0]) difference(){
+        cube([topPcbEdgeDiameter+printerOffset*2+sideCoverThickness,topPcbEdgeDiameter+printerOffset*2+sideCoverThickness,sideCoverHeight]);
+        cylinder(r=topPcbEdgeDiameter+printerOffset+sideCoverThickness, h=sideCoverHeight);
+    }
+}
+
+sideCoverHeight = bottomPcbThickness+topPcbThickness+distancePcbs;
+sideCoverThickness = caseThickness;
+
+module sideCoverInnerNegative(){
+    translate([-printerOffset,-printerOffset,0])difference(){
+        cube([topPcbWidth + printerOffset,topPcbHeight + printerOffset,sideCoverHeight]);
+        
+        //edge cutting
+        rotate([0,0,180])sideCaseInnerEdgeNegative();
+        translate([topPcbWidth+printerOffset*2,topPcbHeight+printerOffset*2,0])rotate([0,0,0])sideCaseInnerEdgeNegative();
+        translate([0,topPcbHeight+printerOffset*2,0])rotate([0,0,90])sideCaseInnerEdgeNegative();
+        translate([topPcbWidth+printerOffset*2,0,0])rotate([0,0,-90])sideCaseInnerEdgeNegative();
+    }
+}
+
+sideCover();
+module sideCover(){
+    difference(){
+    translate([-printerOffset-sideCoverThickness,-printerOffset-sideCoverThickness,0])difference(){
+        cube([topPcbWidth + printerOffset+sideCoverThickness*2,topPcbHeight + printerOffset+sideCoverThickness*2,sideCoverHeight]);
+        
+        //edge cutting
+        rotate([0,0,180])sideCaseOuterEdgeNegative();
+        translate([topPcbWidth+(printerOffset+sideCoverThickness)*2,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,0])sideCaseOuterEdgeNegative();
+        translate([0,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,90])sideCaseOuterEdgeNegative();
+        translate([topPcbWidth++(printerOffset+sideCoverThickness)*2,0,0])rotate([0,0,-90])sideCaseOuterEdgeNegative();
+    }
+    sideCoverInnerNegative();
+    }
+}
