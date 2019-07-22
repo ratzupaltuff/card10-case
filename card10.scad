@@ -12,7 +12,7 @@ bottomPcbHeight = 38;
 
 bottomEdgeDiameter = 4.5;
 
-//toppcb
+//topPcb
 topCaseThickness = 2;
 topPcbWidth = bottomPcbWidth;
 topPcbHeight = 35.5;
@@ -42,17 +42,17 @@ button4x = topPcbWidth-buttonDepth+printerOffset/2;
 button4Y = 13-printerOffset/2;
 
 //display
-displayHeight = 13.5+printerOffset;
-displayWidth = 28+printerOffset;
-displayThickness = 1.6;
+displayHeight = 13.5+printerOffset*2;
+displayWidth = 28+printerOffset*2;
+displayThickness = 1.85;
 displayCableHeight = 9+printerOffset;
 displayCableWidth = 2+printerOffset;
-displayPositionX = 10-printerOffset/2;
-displayPositionY = 12-printerOffset/2;
+displayPositionX = 10-printerOffset;
+displayPositionY = 12-printerOffset;
 displayCablePositonY = 2-printerOffset/2;
 
-displayBacklightHeight = 11;
-displayBacklightWidth = 22;
+displayBacklightHeight = 11.5;
+displayBacklightWidth = 22.5;
 displayBacklightPosX = 4;
 displayBacklightPosY = 1;
 
@@ -64,8 +64,8 @@ topScrewDistanceX = bottomScrewDistanceX;
 topScrewDistanceY = 3.25;
 ScrewDistanceX = 39;
 ScrewDistanceY = 29;
-screwHeadDiameter = 4;
-screwHeadHeight = 1;
+screwHeadDiameter = 4+printerOffset;
+screwHeadHeight = 0.5;
 screwDiameter = 2;
 
 //spacer
@@ -82,7 +82,7 @@ sensorThickness = topCaseThickness; //1.5
 //frontLed
 ledHeight = 3;
 ledWidth = 3;
-ledThickness = caseThickness;
+ledThickness = topCaseThickness-0.2;
 ledPosX = 27.5;
 ledPosY = 29.5;
 
@@ -91,7 +91,7 @@ jumperHeight = 2+printerOffset;
 jumperWidth = 3+printerOffset;
 jumperThickness = 1;
 jumperPosX = 39-printerOffset/2;
-jumperPosY = 18.5-printerOffset/2;
+jumperPosY = 18.3-printerOffset/2;
 
 //klicker
 klickerDistance = 1;
@@ -106,9 +106,11 @@ klickerAngle = 30;
 
 //display elements
 //color("grey")bottomPcbCover();
-//translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+bottomPcbThickness])topCover();
-//topCover();
+//translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+topCover();
 //sideCoverInnerNegative();
+//translate([0,topPcbOffset,caseThickness])sideCover();
+//sideCover();
 
 module bottomPcbCover(){
 difference(){
@@ -252,8 +254,17 @@ module sideCaseOuterEdgeNegative(){
     }
 }
 
-sideCoverHeight = bottomPcbThickness+topPcbThickness+distancePcbs;
+sideCoverHeight = bottomPcbThickness+topPcbThickness+distancePcbs-printerOffset;
 sideCoverThickness = caseThickness;
+//typeC
+typeCHeight = 3.2+printerOffset;
+typeCWidth = 9+printerOffset;
+typeCPosY = 19.5+topPcbOffset-printerOffset/2; //fromTopPlate
+
+//pcbOverhangs
+pcbOverhangThickness = 2;
+        pcbOverhangDepth = 1;
+        pcbOverhangPosY = 18;
 
 module sideCoverInnerNegative(){
     translate([-printerOffset,-printerOffset,0])difference(){
@@ -267,18 +278,44 @@ module sideCoverInnerNegative(){
     }
 }
 
-sideCover();
+
 module sideCover(){
     difference(){
-    translate([-printerOffset-sideCoverThickness,-printerOffset-sideCoverThickness,0])difference(){
-        cube([topPcbWidth + printerOffset+sideCoverThickness*2,topPcbHeight + printerOffset+sideCoverThickness*2,sideCoverHeight]);
+        translate([-printerOffset-sideCoverThickness,-printerOffset-sideCoverThickness,0])difference(){
+            cube([topPcbWidth + printerOffset*2+sideCoverThickness*2,topPcbHeight + printerOffset*2+sideCoverThickness*2,sideCoverHeight]);
         
-        //edge cutting
-        rotate([0,0,180])sideCaseOuterEdgeNegative();
-        translate([topPcbWidth+(printerOffset+sideCoverThickness)*2,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,0])sideCaseOuterEdgeNegative();
-        translate([0,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,90])sideCaseOuterEdgeNegative();
-        translate([topPcbWidth++(printerOffset+sideCoverThickness)*2,0,0])rotate([0,0,-90])sideCaseOuterEdgeNegative();
+            //edge cutting
+            rotate([0,0,180])sideCaseOuterEdgeNegative();
+            translate([topPcbWidth+(printerOffset+sideCoverThickness)*2,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,0])sideCaseOuterEdgeNegative();
+            translate([0,topPcbHeight++(printerOffset+sideCoverThickness)*2,0])rotate([0,0,90])sideCaseOuterEdgeNegative();
+            translate([topPcbWidth++(printerOffset+sideCoverThickness)*2,0,0])rotate([0,0,-90])sideCaseOuterEdgeNegative();
+        }
+        sideCoverInnerNegative();
+        
+        //typeC
+        typeCNegative();
+        translate([0,0,-typeCHeight])typeCNegative();
+        
+        //bottomPlate 
+        translate([-printerOffset-sideCoverThickness-0.5,-topPcbOffset-bottomEdgeDiameter,0])cube([bottomPcbWidth+printerOffset*2+sideCoverThickness*2+1,bottomEdgeDiameter*2,bottomPcbThickness]);
+        
+         translate([-printerOffset-sideCoverThickness-0.5,bottomPcbHeight-bottomEdgeDiameter,0])cube([bottomPcbWidth+printerOffset*2+sideCoverThickness*2+1,bottomEdgeDiameter*2,bottomPcbThickness]);
+        
+        //contact pins
+        translate([contactPinDistanceX,bottomPcbHeight-contactPinHeigth-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
+        
+        translate([contactPinDistanceX,-printerOffset-sideCoverThickness-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
+        
+        
+        
+        //spare for pcb interconnect overhangs
+        translate([-printerOffset-pcbOverhangDepth,-topPcbOffset+pcbOverhangPosY,0])cube([bottomPcbWidth+printerOffset*2+pcbOverhangDepth*2,pcbOverhangThickness,bottomPcbThickness]);
+        
     }
-    sideCoverInnerNegative();
-    }
+    
+}
+
+//typeCNegative();
+module typeCNegative(){
+    translate([-sideCoverThickness-printerOffset-0.5,typeCPosY,bottomPcbThickness])cube([sideCoverThickness+1,typeCWidth,typeCHeight]);
 }
