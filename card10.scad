@@ -7,15 +7,15 @@ caseThickness = 1.5;
 
 //bottompcb
 bottomPcbThickness = 1;
-bottomPcbWidth = 45;
-bottomPcbHeight = 38;
+bottomPcbWidth = 45.2;
+bottomPcbHeight = 38.2;
 
 bottomEdgeDiameter = 4.5;
 
 //topPcb
 topCaseThickness = 2;
 topPcbWidth = bottomPcbWidth;
-topPcbHeight = 35.5;
+topPcbHeight = 35.7;
 topPcbEdgeDiameter = 2.75;
 topPcbThickness = 1.8;
 
@@ -103,14 +103,28 @@ klickerCylinderMaxWidth = 1;
 klickerCylinderScaleFactor = 0.5;
 klickerAngle = 30;
 
+//sideCover
+sideCoverHeight = bottomPcbThickness+topPcbThickness+distancePcbs-printerOffset;
+sideCoverThickness = caseThickness;
+
+//typeC
+typeCHeight = 3.2+printerOffset;
+typeCWidth = 9+printerOffset;
+typeCPosY = 19.5+topPcbOffset; //fromTopPlate
+
+//pcbOverhangs
+pcbOverhangThickness = 2;
+pcbOverhangDepth = 1;
+pcbOverhangPosY = 18;
+
 
 //display elements
 //color("grey")bottomPcbCover();
 //translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
-topCover();
+//topCover();
 //sideCoverInnerNegative();
 //translate([0,topPcbOffset,caseThickness])sideCover();
-//sideCover();
+sideCover();
 
 module bottomPcbCover(){
 difference(){
@@ -254,17 +268,6 @@ module sideCaseOuterEdgeNegative(){
     }
 }
 
-sideCoverHeight = bottomPcbThickness+topPcbThickness+distancePcbs-printerOffset;
-sideCoverThickness = caseThickness;
-//typeC
-typeCHeight = 3.2+printerOffset;
-typeCWidth = 9+printerOffset;
-typeCPosY = 19.5+topPcbOffset-printerOffset/2; //fromTopPlate
-
-//pcbOverhangs
-pcbOverhangThickness = 2;
-        pcbOverhangDepth = 1;
-        pcbOverhangPosY = 18;
 
 module sideCoverInnerNegative(){
     translate([-printerOffset,-printerOffset,0])difference(){
@@ -317,5 +320,5 @@ module sideCover(){
 
 //typeCNegative();
 module typeCNegative(){
-    translate([-sideCoverThickness-printerOffset-0.5,typeCPosY,bottomPcbThickness])cube([sideCoverThickness+1,typeCWidth,typeCHeight]);
+    translate([-sideCoverThickness-printerOffset-0.5,typeCPosY-topPcbOffset,bottomPcbThickness])cube([sideCoverThickness+1,typeCWidth,typeCHeight]);
 }
