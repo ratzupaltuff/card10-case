@@ -16,7 +16,7 @@ bottomEdgeDiameter = 4.5;
 topPcbWidth = bottomPcbWidth;
 topPcbHeight = 35.5;
 topPcbEdgeDiameter = 2.75;
-bottomPcbThickness = 1.8;
+topPcbThickness = 1.8;
 
 //contactPins
 contactPinWidth = 33;
@@ -25,30 +25,30 @@ contactPinDistanceX = 6;
 
 //buttons
 buttonHeight = 1.5;
-buttonWidth = 3.8;
-buttonDepth = 3.2;
+buttonWidth = 3.8+printerOffset;
+buttonDepth = 3.2+printerOffset;
 buttonSolderPadsWidth = 1;
 buttonSolderPadHeight = buttonHeight/2;
 
 //buttonPositions
 button1x = 0;
-button1Y = 23.5;
+button1Y = 23.5-printerOffset/2;
 button2x = 0;
-button2Y = 7.8;
-button3x = 42;
-button3Y = 7;
-button4x = 42;
-button4Y = 13;
+button2Y = 7.8-printerOffset/2;
+button3x = topPcbWidth-buttonDepth+printerOffset/2;
+button3Y = 7-printerOffset/2;
+button4x = topPcbWidth-buttonDepth+printerOffset/2;
+button4Y = 13-printerOffset/2;
 
 //display
-displayHeight = 13.5;
-displayWidth = 28;
+displayHeight = 13.5+printerOffset;
+displayWidth = 28+printerOffset;
 displayThickness = 2;
-displayCableHeight = 9;
-displayCableWidth = 2;
-displayPositionX = 10;
-displayPositionY = 9.5;
-displayCablePositonY = 2;
+displayCableHeight = 9+printerOffset;
+displayCableWidth = 2+printerOffset;
+displayPositionX = 10-printerOffset/2;
+displayPositionY = 9.5-printerOffset/2;
+displayCablePositonY = 2-printerOffset/2;
 
 
 //screws
@@ -67,10 +67,10 @@ distancePcbs = 5;
 topPcbOffset = bottomScrewDistanceY-topScrewDistanceY;
 
 //IRsensor
-sensorHeight = 3.5;
-sensorWidth = 5.5;
-sensorPosX = 23;
-sensorPosY = 2.8;
+sensorHeight = 3.5 + printerOffset;
+sensorWidth = 5.5 + printerOffset;
+sensorPosX = 23 - printerOffset/2;
+sensorPosY = 2.8 -printerOffset/2;
 sensorThickness = 1.5;
 
 //frontLed
@@ -83,13 +83,24 @@ ledPosY = 29.5;
 //display elements
 bottomPcbCover();
 translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+bottomPcbThickness])topCover();
+//topCover();
 
 //jumperSpare
-jumperHeight = 2;
-jumperWidth = 3;
+jumperHeight = 2+printerOffset;
+jumperWidth = 3+printerOffset;
 jumperThickness = 1;
-jumperPosX = 39;
-jumperPosY = 18.5;
+jumperPosX = 39-printerOffset/2;
+jumperPosY = 18.5-printerOffset/2;
+
+//klicker
+klickerDistance = 1;
+klickerLength = 5;
+klickerMountWidth = 2;
+klickerArmThickness = 1;
+klickerCylinderPosX = 5;
+klickerCylinderMaxWidth = 1;
+klickerCylinderScaleFactor = 0.5;
+klickerAngle = 30;
 
 
 module bottomPcbCover(){
@@ -137,7 +148,13 @@ module topEdgeNegative(){
 
 module topCover(){
 difference(){
-    cube([topPcbWidth,topPcbHeight,caseThickness]);
+    union(){
+        cube([topPcbWidth,topPcbHeight,caseThickness]);
+        translate([button1x,button1Y+buttonWidth,0]) mirror([0,1,0])klicker();
+        translate([button2x,button2Y,0]) klicker();
+        translate([bottomPcbWidth,button3Y,0]) mirror([1,0,0])klicker();
+        translate([bottomPcbWidth,button4Y+buttonWidth,0]) mirror([0,1,0]) mirror([1,0,0])klicker();
+    }
 
     //screw cuttings
     translate([topScrewDistanceX,topScrewDistanceY,0])cylinder(,d2=screwHeadDiameter+printerOffset,d1=screwDiameter+printerOffset,h=screwHeadHeight);
@@ -189,6 +206,20 @@ module displayNegative(){
     translate([-displayCablePositonY,displayCableWidth,0])cube([displayCableWidth,displayCableHeight,displayThickness]);
 }
 
+module klicker(){
+    intersection(){
+        union(){
+            translate([-klickerDistance-klickerArmThickness,-klickerLength,0])cube([klickerArmThickness,klickerLength+buttonWidth,caseThickness]);
+            intersection(){
+                translate([-klickerDistance-klickerArmThickness-klickerCylinderMaxWidth,0,0])cube([klickerCylinderMaxWidth,buttonWidth,caseThickness]);
+
+                translate([-klickerDistance-klickerArmThickness,buttonWidth/2,0])scale([klickerCylinderScaleFactor,1,1])cylinder(d=buttonWidth,h=caseThickness);
+            }
+        }
+        translate([-klickerDistance,-klickerLength,0])rotate([0,0,klickerAngle])cube([30,30,caseThickness]);
+    }
+    translate([-klickerDistance,-klickerLength,0])cube([klickerDistance,klickerMountWidth,caseThickness]);
+}
 
 
 
