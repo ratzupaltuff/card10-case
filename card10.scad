@@ -72,17 +72,17 @@ screwDiameter = 2;
 distancePcbs = 5;
 topPcbOffset = bottomScrewDistanceY-topScrewDistanceY;
 
-//IRsensor
+//Fingerprint sensor
 sensorHeight = 3.5 + printerOffset;
 sensorWidth = 5.5 + printerOffset;
 sensorPosX = 23.2 - printerOffset/2; //23
 sensorPosY = 2.6 -printerOffset/2; //2.8
 sensorThickness = topCaseThickness; //1.5
 
-//frontLed
+//frontLed/ir sensor
 ledHeight = 3;
 ledWidth = 3;
-ledThickness = topCaseThickness-0.2;
+ledThickness = topCaseThickness; //-0.15
 ledPosX = 27.5;
 ledPosY = 29.5;
 
@@ -118,50 +118,40 @@ pcbOverhangDepth = 1;
 pcbOverhangPosY = 18;
 
 
-//display elements
-
-//bottomPcbCover();
-
-
-//translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
-topCover();
-//sideCoverInnerNegative();
-//translate([0,0,caseThickness])sideCover();
+//choose which elements to display
+bottomPcbCover();
+translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+//topCover();
+translate([0,0,caseThickness+printerOffset/2])sideCover();
 //sideCover();
 
 module bottomPcbCover(){
-difference(){
-    hull(){
-        difference(){
-    cube([bottomPcbWidth,bottomPcbHeight,caseThickness]);
-    //edge cutting
-    rotate([0,0,180])bottomEdgeNegative();
-    translate([bottomPcbWidth,bottomPcbHeight,0])rotate([0,0,0])bottomEdgeNegative();
-    translate([0,bottomPcbHeight,0])rotate([0,0,90])bottomEdgeNegative();
-    translate([bottomPcbWidth,0,0])rotate([0,0,-90])bottomEdgeNegative();
+    difference(){
+        hull(){
+            difference(){
+                cube([bottomPcbWidth,bottomPcbHeight,caseThickness]);
+                //edge cutting
+                rotate([0,0,180])bottomEdgeNegative();
+                translate([bottomPcbWidth,bottomPcbHeight,0])rotate([0,0,0])bottomEdgeNegative();
+                translate([0,bottomPcbHeight,0])rotate([0,0,90])bottomEdgeNegative();
+                translate([bottomPcbWidth,0,0])rotate([0,0,-90])bottomEdgeNegative();
+            }
+            translate([0,0,caseThickness-0.1])sideCoverRaw(0.1);
         }
+
+        //screw cuttings
+        translate([bottomScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
     
-        translate([0,0,caseThickness-0.1])sideCoverRaw(0.1);
-    }
-
-    //screw cuttings
-    translate([bottomScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
-
-
-    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,0])screwNegative(caseThickness);
-
-
-    translate([bottomScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
-
-
-    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,0])screwNegative(caseThickness);
-    
-    //contactPinCuttings
-    translate([contactPinDistanceX,-contactPinHeigth,0])cube([contactPinWidth,contactPinHeigth*2,caseThickness]);
-    
-    translate([contactPinDistanceX,bottomPcbHeight-contactPinHeigth,0])cube([contactPinWidth,contactPinHeigth*2,caseThickness]);
+        //contactPinCuttings
+        translate([contactPinDistanceX,-contactPinHeigth,0])cube([contactPinWidth,contactPinHeigth*2,caseThickness]);
+        translate([contactPinDistanceX,bottomPcbHeight-contactPinHeigth,0])cube([contactPinWidth,contactPinHeigth*2,caseThickness]);
     
     }
+    
+    //typeC overlap
     translate([-sideCoverThickness-printerOffset,typeCPosY+printerOffset,caseThickness])cube([sideCoverThickness,typeCWidth-printerOffset*2,bottomPcbThickness]);
 }
 
@@ -233,18 +223,6 @@ module topCover(){
     }
 }
 
-/*
-//klicker
-klickerDistance = 1;
-klickerLength = 5;
-klickerMountWidth = 2;
-klickerArmThickness = 1;
-klickerCylinderPosX = 5;
-klickerCylinderMaxWidth = 1;
-klickerCylinderScaleFactor = 0.5;
-klickerAngle = 30;
-*/
-//buttonNegative();
 module buttonNegative(){
     cube([buttonDepth,buttonWidth,buttonHeight]);
     translate([0,-buttonSolderPadsWidth,0])cube([buttonDepth,buttonSolderPadsWidth,buttonSolderPadHeight]);
@@ -317,32 +295,27 @@ module sideCover(){
         sideCoverRaw(sideCoverHeight);
         
         translate([0,topPcbOffset,0]){
-        //typeC
-        typeCNegative();
-        translate([0,0,-typeCHeight])typeCNegative();
+            //typeC
+            typeCNegative();
+            translate([0,0,-typeCHeight])typeCNegative();
         
-        //bottomPlate 
-        translate([-printerOffset-sideCoverThickness-0.5,-topPcbOffset-bottomEdgeDiameter,0])cube([bottomPcbWidth+printerOffset*2+sideCoverThickness*2+1,bottomEdgeDiameter*2,bottomPcbThickness]);
+            //bottomPlate 
+            translate([-printerOffset-sideCoverThickness-0.5,-topPcbOffset-bottomEdgeDiameter,0])cube([bottomPcbWidth+printerOffset*2+sideCoverThickness*2+1,bottomEdgeDiameter*2,bottomPcbThickness]);
         
-         translate([-printerOffset-sideCoverThickness-0.5,-topPcbOffset+
+            translate([-printerOffset-sideCoverThickness-0.5,-topPcbOffset+
        bottomPcbHeight-bottomEdgeDiameter,0])cube([bottomPcbWidth+printerOffset*2+sideCoverThickness*2+1,bottomEdgeDiameter*2,bottomPcbThickness]);
         
-        //contact pins
-        translate([contactPinDistanceX,bottomPcbHeight-contactPinHeigth-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
+            //contact pins
+            translate([contactPinDistanceX,bottomPcbHeight-contactPinHeigth-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
         
-        translate([contactPinDistanceX,-printerOffset-sideCoverThickness-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
+            translate([contactPinDistanceX,-printerOffset-sideCoverThickness-0.5,bottomPcbThickness])cube([contactPinWidth,contactPinHeigth+0.5,caseThickness]);
         
-        
-        
-        //spare for pcb interconnect overhangs
-        translate([-printerOffset-pcbOverhangDepth,-topPcbOffset+pcbOverhangPosY,0])cube([bottomPcbWidth+printerOffset*2+pcbOverhangDepth*2,pcbOverhangThickness,bottomPcbThickness]);
+            //spare for pcb interconnect overhangs
+            translate([-printerOffset-pcbOverhangDepth,-topPcbOffset+pcbOverhangPosY,0])cube([bottomPcbWidth+printerOffset*2+pcbOverhangDepth*2,pcbOverhangThickness,bottomPcbThickness]);
         }
-        
     }
-    
 }
 
-//typeCNegative();
 module typeCNegative(){
     translate([-sideCoverThickness-printerOffset-0.5,typeCPosY-topPcbOffset,bottomPcbThickness])cube([sideCoverThickness+1,typeCWidth,typeCHeight]);
 }
