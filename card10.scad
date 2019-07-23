@@ -120,11 +120,11 @@ pcbOverhangPosY = 18;
 
 //display elements
 
-bottomPcbCover();
+//bottomPcbCover();
 
 
-//translate([0,topPcbOffset,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
-//topCover();
+//translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+topCover();
 //sideCoverInnerNegative();
 //translate([0,0,caseThickness])sideCover();
 //sideCover();
@@ -180,58 +180,78 @@ module topEdgeNegative(){
 }
 
 module topCover(){
-difference(){
     union(){
-        cube([topPcbWidth,topPcbHeight,topCaseThickness]);
-        translate([button1x,button1Y+buttonWidth,0]) mirror([0,1,0])klicker();
-        translate([button2x,button2Y,0]) klicker();
-        translate([bottomPcbWidth,button3Y,0]) mirror([1,0,0])klicker();
-        translate([bottomPcbWidth,button4Y+buttonWidth,0]) mirror([0,1,0]) mirror([1,0,0])klicker();
+        difference(){
+            hull(){
+                translate([0,topPcbOffset,0]) difference(){
+                    cube([topPcbWidth,topPcbHeight,topCaseThickness]);
+                    //edge cutting
+                    rotate([0,0,180])topEdgeNegative();
+                    translate([topPcbWidth,topPcbHeight,0])rotate([0,0,0])topEdgeNegative();
+                    translate([0,topPcbHeight,0])rotate([0,0,90])topEdgeNegative();
+                    translate([topPcbWidth,0,0])rotate([0,0,-90])topEdgeNegative();
+                }
+                sideCoverRaw(0.1);
+            }
+       
+            translate([0,topPcbOffset,0]){
+                //screw cuttings
+                translate([topScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
+
+                translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
+
+
+                translate([topScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
+
+
+                translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
+    
+                //button cutting
+                translate([button1x,button1Y+buttonWidth,0]) mirror([0,1,0])buttonNegative();
+                translate([button2x,button2Y,0]) buttonNegative();
+                translate([button3x+buttonDepth,button3Y,0]) mirror([1,0,0])buttonNegative();
+                translate([button4x+buttonDepth,button4Y+buttonWidth,0]) mirror([0,1,0]) mirror([1,0,0])buttonNegative();
+    
+                translate([displayPositionX,displayPositionY,0])displayNegative();
+    
+                //sensor cutting
+                translate([sensorPosX,sensorPosY,0])cube([sensorWidth,sensorHeight,sensorThickness]);
+
+                translate([jumperPosX,jumperPosY,0])cube([jumperWidth,jumperHeight,jumperThickness]);
+    
+                translate([ledPosX,ledPosY,0])cube([ledHeight,ledHeight,ledThickness]);
+            }
+    
+        }
+        translate([0,topPcbOffset,0]){
+            translate([button1x,button1Y+buttonWidth,0]) mirror([0,1,0])klicker();
+            translate([button2x,button2Y,0]) klicker();
+            translate([bottomPcbWidth,button3Y,0]) mirror([1,0,0])klicker();
+            translate([bottomPcbWidth,button4Y+buttonWidth,0]) mirror([0,1,0]) mirror([1,0,0])klicker();
+         }
+            
     }
-
-    //screw cuttings
-    translate([topScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
-
-    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
-
-
-    translate([topScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
-
-
-    translate([topScrewDistanceX+ScrewDistanceX,topScrewDistanceY+ScrewDistanceY,0])screwNegativeRotated(topCaseThickness);
-    
-    //button cutting
-    translate([button1x,button1Y,0]) buttonNegative();
-    translate([button2x,button2Y,0]) buttonNegative();
-    translate([button3x,button3Y,0]) buttonNegative();
-    translate([button4x,button4Y,0]) buttonNegative();
-    
-    translate([displayPositionX,displayPositionY,0])displayNegative();
-    
-    //edge cutting
-    rotate([0,0,180])topEdgeNegative();
-    translate([topPcbWidth,topPcbHeight,0])rotate([0,0,0])topEdgeNegative();
-    translate([0,topPcbHeight,0])rotate([0,0,90])topEdgeNegative();
-    translate([topPcbWidth,0,0])rotate([0,0,-90])topEdgeNegative();
-    
-    //sensor cutting
-    translate([sensorPosX,sensorPosY,0])cube([sensorWidth,sensorHeight,sensorThickness]);
-
-    translate([jumperPosX,jumperPosY,0])cube([jumperWidth,jumperHeight,jumperThickness]);
-    
-    translate([ledPosX,ledPosY,0])cube([ledHeight,ledHeight,ledThickness]);
-    
 }
 
-
-
+/*
+//klicker
+klickerDistance = 1;
+klickerLength = 5;
+klickerMountWidth = 2;
+klickerArmThickness = 1;
+klickerCylinderPosX = 5;
+klickerCylinderMaxWidth = 1;
+klickerCylinderScaleFactor = 0.5;
+klickerAngle = 30;
+*/
+//buttonNegative();
 module buttonNegative(){
     cube([buttonDepth,buttonWidth,buttonHeight]);
     translate([0,-buttonSolderPadsWidth,0])cube([buttonDepth,buttonSolderPadsWidth,buttonSolderPadHeight]);
     translate([0,buttonWidth,0])cube([buttonDepth,buttonSolderPadsWidth,buttonSolderPadHeight]);
-    
+    translate([-klickerDistance-klickerArmThickness,-klickerLength+klickerMountWidth,0])cube([klickerDistance+klickerArmThickness,klickerLength+buttonWidth-klickerMountWidth+buttonSolderPadsWidth,topCaseThickness]);
 }
-}
+
 
 module displayNegative(){
     cube([displayWidth,displayHeight,displayThickness]);
