@@ -1,61 +1,21 @@
 //$fa = 0.5;
 $fs = 0.5;
 
-//printer
+//printerSettings
 printerOffset = 0.2;
 caseThickness = 1.5;
+layerHeight = 0.16;
 
 //bottompcb
-bottomPcbThickness = 1;
+bottomPcbThickness = 1+printerOffset/2;
 bottomPcbWidth = 45.2;
 bottomPcbHeight = 38.2;
-
 bottomEdgeDiameter = 4.5;
-
-//topPcb
-topCaseThickness = 2;
-topPcbWidth = bottomPcbWidth;
-topPcbHeight = 35.7;
-topPcbEdgeDiameter = 2.75;
-topPcbThickness = 1.8;
 
 //contactPins
 contactPinWidth = 33;
 contactPinHeigth = 3;
 contactPinDistanceX = 6;
-
-//buttons
-buttonHeight = 1.5;
-buttonWidth = 3.8+printerOffset;
-buttonDepth = 3.2+printerOffset;
-buttonSolderPadsWidth = 1;
-buttonSolderPadHeight = buttonHeight/2;
-
-//buttonPositions
-button1x = 0;
-button1Y = 23.5-printerOffset/2;
-button2x = 0;
-button2Y = 7.8-printerOffset/2;
-button3x = topPcbWidth-buttonDepth+printerOffset/2;
-button3Y = 7-printerOffset/2;
-button4x = topPcbWidth-buttonDepth+printerOffset/2;
-button4Y = 13-printerOffset/2;
-
-//display
-displayHeight = 13.5+printerOffset*2;
-displayWidth = 28+printerOffset*2;
-displayThickness = 1.85;
-displayCableHeight = 9+printerOffset;
-displayCableWidth = 2+printerOffset;
-displayPositionX = 10-printerOffset;
-displayPositionY = 12-printerOffset;
-displayCablePositonY = 2-printerOffset/2;
-
-displayBacklightHeight = 11.5;
-displayBacklightWidth = 22.5;
-displayBacklightPosX = 4;
-displayBacklightPosY = 1;
-
 
 //screws
 bottomScrewDistanceX = 3;
@@ -72,19 +32,93 @@ screwDiameter = 2;
 distancePcbs = 5;
 topPcbOffset = bottomScrewDistanceY-topScrewDistanceY;
 
-//Fingerprint sensor
+//topPcb
+topCaseThickness = 2;
+topPcbWidth = bottomPcbWidth;
+topPcbHeight = 35.7;
+topPcbEdgeDiameter = 2.75;
+topPcbThickness = bottomPcbThickness;
+
+//buttons
+buttonHeight = 1.5;
+buttonWidth = 3.8+printerOffset;
+buttonDepth = 3.2+printerOffset;
+buttonSolderPadsWidth = 1;
+buttonSolderPadHeight = buttonHeight/2;
+
+//buttonPositions
+button1x = 0;
+button1Y = 23.5-printerOffset/2;
+
+button2x = 0;
+button2Y = 7.8-printerOffset/2;
+
+button3x = topPcbWidth-buttonDepth+printerOffset/2;
+button3Y = 7-printerOffset/2;
+
+button4x = topPcbWidth-buttonDepth+printerOffset/2;
+button4Y = 13-printerOffset/2;
+
+//display and connector
+displayHeight = 13.5+printerOffset*2;
+displayWidth = 28+printerOffset*2;
+displayThickness = topCaseThickness-layerHeight;
+displayCableHeight = 9+printerOffset;
+displayCableWidth = 2+printerOffset;
+
+//please check those two values, may vary due to flexible mount
+//measured from top pcb corner to corner of display (both bottom-left)
+displayPositionX = 8.5-printerOffset;
+displayPositionY = 12-printerOffset;
+displayCablePositonY = 2-printerOffset/2;
+
+//actual visible area of display
+displayBacklightHeight = 11.5;
+displayBacklightWidth = 22.5;
+//position of visible area relative to bottom-left corner of display
+displayBacklightPosX = 4.8;
+displayBacklightPosY = 1.5;
+
+//Heartbeat sensor
 sensorHeight = 3.5 + printerOffset;
 sensorWidth = 5.5 + printerOffset;
 sensorPosX = 23.2 - printerOffset/2; //23
 sensorPosY = 2.6 -printerOffset/2; //2.8
 sensorThickness = topCaseThickness; //1.5
 
+//frontResistor
+resistorHeight = 1.2 + printerOffset;
+resistorWidth = 2.6;
+resistorDepth = 1.2;
+resistorX = 27.5;
+resistorY = 31.3;
+
 //frontLed/ir sensor
-ledHeight = 3;
-ledWidth = 3;
-ledThickness = topCaseThickness; //-0.15
-ledPosX = 27.5;
-ledPosY = 29.5;
+ledHeight = resistorHeight;
+ledWidth = resistorWidth;
+ledThickness = topCaseThickness+1; //-0.15
+ledPosX = resistorX + 3;
+ledPosY = resistorY;
+
+//rgbLeds
+rgbLedsHeight = 2.2+printerOffset;
+rgbLedsWidth = 2.2+printerOffset;
+rgbLedsThickness = topCaseThickness-layerHeight;
+rgbLedsBeginPosX = 6.7-printerOffset/2;
+//LEFT edge of the last rgbLed
+rgbLedsEndPosX = 36-printerOffset/2;
+rgbLedsPosY = 33-printerOffset/2;
+rgbLedsNumber = 11;
+rgbLedsDistance = (rgbLedsEndPosX-rgbLedsBeginPosX)/(rgbLedsNumber-1);
+
+//card10 finger contact pins
+contactPinSmallDiameter = 4;
+contactPinLargeDiameter = 10;
+conatctPinThickness = topCaseThickness;
+contactPinLeftX = 14;
+contactPinRightX = 32.5;
+contactPinY = 4.5;
+contactPinScaleYFactor = 0.8;
 
 //jumperSpare
 jumperHeight = 2+printerOffset;
@@ -117,13 +151,14 @@ pcbOverhangThickness = 2;
 pcbOverhangDepth = 1;
 pcbOverhangPosY = 18;
 
-
 //choose which elements to display
-bottomPcbCover();
-translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
-//topCover();
-translate([0,0,caseThickness+printerOffset/2])sideCover();
-//sideCover();
+//bottom cover
+    bottomPcbCover();
+//top cover  
+    translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+    //topCover();
+//side cover
+    translate([0,0,caseThickness+printerOffset/2])sideCover();
 
 module bottomPcbCover(){
     difference(){
@@ -204,12 +239,24 @@ module topCover(){
     
                 translate([displayPositionX,displayPositionY,0])displayNegative();
     
-                //sensor cutting
+                //Heartbeat sensor cutting
                 translate([sensorPosX,sensorPosY,0])cube([sensorWidth,sensorHeight,sensorThickness]);
 
+                //jumper-solder pads on the right of the display
                 translate([jumperPosX,jumperPosY,0])cube([jumperWidth,jumperHeight,jumperThickness]);
-    
-                translate([ledPosX,ledPosY,0])cube([ledHeight,ledHeight,ledThickness]);
+                
+                //front irLed-transceiver
+                translate([ledPosX,ledPosY,0])cube([ledWidth,ledHeight,ledThickness]);
+                
+                //front resistor on the left of irLed
+                translate([resistorX,resistorY,0])cube([resistorWidth,resistorHeight,resistorThickness]);
+                
+                for (rgbLedNr = [0:rgbLedsNumber-1]) { 
+                    translate([rgbLedsBeginPosX+rgbLedsDistance*rgbLedNr,rgbLedsPosY,0])cube([rgbLedsWidth,rgbLedsHeight,rgbLedsThickness]);
+                }
+                
+                //contactPins for card10 ecg sensor
+                contactPinsNegative();
             }
     
         }
@@ -221,6 +268,11 @@ module topCover(){
          }
             
     }
+}
+
+module contactPinsNegative(){
+    translate([contactPinLeftX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
+    translate([contactPinRightX,contactPinY,0])scale([1,contactPinScaleYFactor,1])translate()cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
 }
 
 module buttonNegative(){
