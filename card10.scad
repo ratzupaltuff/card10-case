@@ -8,7 +8,7 @@ layerHeight = 0.16;
 
 //bottompcb
 bottomPcbThickness = 1+printerOffset/2;
-bottomPcbWidth = 45.2;
+bottomPcbWidth = 45;
 bottomPcbHeight = 38.2;
 bottomEdgeDiameter = 4.5;
 
@@ -120,6 +120,14 @@ contactPinRightX = 32.5;
 contactPinY = 4.5;
 contactPinScaleYFactor = 0.8;
 
+//rocket leds
+rocketRoundPosX = 6;
+rocketRoundPosY = 19.5;
+rocketLinesPosX = 20.5;
+rocketLinesPosY = 30;
+rocketLeafPosX = 38.5;
+rocketLeadPosY = 15;
+
 //jumperSpare
 jumperHeight = 2+printerOffset;
 jumperWidth = 3+printerOffset;
@@ -153,12 +161,12 @@ pcbOverhangPosY = 18;
 
 //choose which elements to display
 //bottom cover
-    bottomPcbCover();
+    //bottomPcbCover();
 //top cover  
     translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
     //topCover();
 //side cover
-    translate([0,0,caseThickness+printerOffset/2])sideCover();
+    //translate([0,0,caseThickness+printerOffset/2])sideCover();
 
 module bottomPcbCover(){
     difference(){
@@ -257,6 +265,11 @@ module topCover(){
                 
                 //contactPins for card10 ecg sensor
                 contactPinsNegative();
+               
+                //cutouts rocket leds
+                translate([rocketRoundPosX,rocketRoundPosY,0])cutoutsRocketLed();
+                translate([rocketLinesPosX,rocketLinesPosY,0])rotate([0,0,90])cutoutsRocketLed();
+                translate([rocketLeafPosX,rocketLeadPosY,0])cutoutsRocketLed();
             }
     
         }
@@ -367,6 +380,15 @@ module sideCover(){
         }
     }
 }
+
+rocketLedHeight = 5.5;
+rocketLedWidth = 3.5;
+rocketLedWidthPercentage = rocketLedWidth/rocketLedHeight;
+module cutoutsRocketLed(){
+    scale([rocketLedWidthPercentage,1,1])cylinder(d=rocketLedHeight,h=topCaseThickness);
+}
+
+
 
 module typeCNegative(){
     translate([-sideCoverThickness-printerOffset-0.5,typeCPosY-topPcbOffset,bottomPcbThickness])cube([sideCoverThickness+1,typeCWidth,typeCHeight]);
