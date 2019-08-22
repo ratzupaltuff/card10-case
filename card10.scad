@@ -76,14 +76,14 @@ displayCablePositonY = 2-printerOffset/2;
 displayBacklightHeight = 11.5;
 displayBacklightWidth = 22.5;
 //position of visible area relative to bottom-left corner of display
-displayBacklightPosX = 4.8;
-displayBacklightPosY = 1.5;
+displayBacklightPosX = 4.6;
+displayBacklightPosY = 1.3;
 
 //Heartbeat sensor
-sensorHeight = 3.5 + printerOffset;
-sensorWidth = 5.5 + printerOffset;
-sensorPosX = 23.2 - printerOffset/2; //23
-sensorPosY = 2.6 -printerOffset/2; //2.8
+sensorHeight = 3.7 + printerOffset;
+sensorWidth = 5.8 + printerOffset;
+sensorPosX = 23.1 - printerOffset/2; //23
+sensorPosY = 2.5 -printerOffset/2; //2.8
 sensorThickness = topCaseThickness; //1.5
 
 //frontResistor
@@ -101,8 +101,8 @@ ledPosX = resistorX + 3;
 ledPosY = resistorY;
 
 //rgbLeds
-rgbLedsHeight = 2.2+printerOffset;
-rgbLedsWidth = 2.2+printerOffset;
+rgbLedsHeight = 2.3+printerOffset;
+rgbLedsWidth = 2.3+printerOffset;
 rgbLedsThickness = topCaseThickness-layerHeight;
 rgbLedsBeginPosX = 6.7-printerOffset/2;
 //LEFT edge of the last rgbLed
