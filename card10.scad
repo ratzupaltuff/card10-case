@@ -91,7 +91,7 @@ resistorHeight = 1.2 + printerOffset;
 resistorWidth = 2.6;
 resistorDepth = 1.2;
 resistorX = 27.5;
-resistorY = 31.3;
+resistorY = 31;
 
 //frontLed/ir sensor
 ledHeight = resistorHeight;
@@ -101,8 +101,8 @@ ledPosX = resistorX + 3;
 ledPosY = resistorY;
 
 //rgbLeds
-rgbLedsHeight = 2.3+printerOffset;
-rgbLedsWidth = 2.3+printerOffset;
+rgbLedsHeight = 2.25+printerOffset;
+rgbLedsWidth = 2.25+printerOffset;
 rgbLedsThickness = topCaseThickness-layerHeight;
 rgbLedsBeginPosX = 6.7-printerOffset/2;
 //LEFT edge of the last rgbLed
@@ -136,7 +136,7 @@ jumperPosX = 39-printerOffset/2;
 jumperPosY = 18.3-printerOffset/2;
 
 //klicker
-klickerDistance = 1;
+klickerDistance = 0.9;
 klickerLength = 5;
 klickerMountWidth = 2;
 klickerArmThickness = 1;
@@ -257,7 +257,7 @@ module topCover(){
                 translate([ledPosX,ledPosY,0])cube([ledWidth,ledHeight,ledThickness]);
                 
                 //front resistor on the left of irLed
-                translate([resistorX,resistorY,0])cube([resistorWidth,resistorHeight,resistorThickness]);
+                translate([resistorX,resistorY,0])cube([resistorWidth,resistorHeight,resistorDepth]);
                 
                 for (rgbLedNr = [0:rgbLedsNumber-1]) { 
                     translate([rgbLedsBeginPosX+rgbLedsDistance*rgbLedNr,rgbLedsPosY,0])cube([rgbLedsWidth,rgbLedsHeight,rgbLedsThickness]);
@@ -285,7 +285,7 @@ module topCover(){
 
 module contactPinsNegative(){
     translate([contactPinLeftX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
-    translate([contactPinRightX,contactPinY,0])scale([1,contactPinScaleYFactor,1])translate()cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
+    translate([contactPinRightX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
 }
 
 module buttonNegative(){
