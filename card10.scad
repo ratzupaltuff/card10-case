@@ -14,7 +14,7 @@ bottomEdgeDiameter = 4.5;
 
 //wristband
 wristbandHolderWidth = 6;
-wristbandHolderHeight = 0.4;
+wristbandHolderHeight = 0.6;
 wristbandHolderHeightAroundScrew = 0.2;
 wristbandHolderInsetY = 0.5;
 
@@ -88,9 +88,10 @@ displayBacklightPosY = 1.3;
 //Heartbeat sensor
 sensorHeight = 3.6 + printerOffset;
 sensorWidth = 5.8 + printerOffset;
+sensorThickness = 1.5;
 sensorPosX = 23.1 - printerOffset/2; //23
 sensorPosY = 2.5 -printerOffset/2; //2.8
-sensorThickness = topCaseThickness; //1.5
+heartbeatSensorOvalDiameter = 12;
 
 //frontResistor
 resistorHeight = 1.2 + printerOffset;
@@ -118,10 +119,10 @@ rgbLedsNumber = 11;
 rgbLedsDistance = (rgbLedsEndPosX-rgbLedsBeginPosX)/(rgbLedsNumber-1);
 
 //card10 finger contact pins
-contactPinSmallDiameter = 4;
-contactPinLargeDiameter = 10;
+contactPinSmallDiameter = 8;
+contactPinLargeDiameter = 12;
 conatctPinThickness = topCaseThickness;
-contactPinLeftX = 14;
+contactPinLeftX = 16;
 contactPinRightX = 32.5;
 contactPinY = 4.5;
 contactPinScaleYFactor = 0.8;
@@ -167,12 +168,30 @@ pcbOverhangPosY = 18;
 
 //choose which elements to display
 //bottom cover
-    bottomPcbCover();
+    //bottomPcbCover();
 //top cover  
-    translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+    //positionedTopCover();
     //topCover();
 //side cover
+    //positionedSideCover();
+    sideCover();
+//whole case
+    //case();
+    
+
+module case(){
+    positionedTopCover();
+    positionedSideCover();
+    bottomPcbCover();
+}
+    
+module positionedTopCover(){
+    translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
+}
+
+module positionedSideCover(){
     translate([0,0,caseThickness+printerOffset/2])sideCover();
+}
 
 module bottomPcbCover(){
     difference(){
@@ -294,7 +313,7 @@ module topCover(){
                 translate([displayPositionX,displayPositionY,0])displayNegative();
     
                 //Heartbeat sensor cutting
-                translate([sensorPosX,sensorPosY,0])cube([sensorWidth,sensorHeight,sensorThickness]);
+                negativeHeartbeatSensor();
 
                 //jumper-solder pads on the right of the display
                 translate([jumperPosX,jumperPosY,0])cube([jumperWidth,jumperHeight,jumperThickness]);
@@ -329,10 +348,26 @@ module topCover(){
     }
 }
 
-module contactPinsNegative(){
-    translate([contactPinLeftX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
-    translate([contactPinRightX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
+module negativeHeartbeatSensor(){
+    translate([sensorPosX,sensorPosY,0])cube([sensorWidth,sensorHeight,sensorThickness]);
+    
+    hull(){
+        translate([sensorPosX,sensorPosY,sensorThickness])
+        cube([sensorWidth,sensorHeight,0.01]);
+    
+        translate([sensorPosX+sensorWidth/2,sensorPosY+sensorHeight/2,topCaseThickness])cylinder(d=heartbeatSensorOvalDiameter, h=0.01);
+    }
+    
 }
+
+module contactPinsNegative(){
+    hull(){
+        translate([contactPinLeftX,contactPinY,0])scale([1,contactPinScaleYFactor,1])cylinder(d1=contactPinSmallDiameter,d2=contactPinLargeDiameter,h=conatctPinThickness);
+        translate([contactPinLeftX-contactPinLargeDiameter/2,-caseThickness-printerOffset,0]) cube([contactPinLargeDiameter,1,topCaseThickness]);
+    }
+}
+
+
 
 module buttonNegative(){
     cube([buttonDepth,buttonWidth,buttonHeight]);
@@ -390,13 +425,14 @@ module sideCaseOuterEdgeNegative(){
 
 module sideCoverInnerNegative(){
     translate([-printerOffset,-printerOffset,0])difference(){
-        cube([topPcbWidth + printerOffset,topPcbHeight + printerOffset,sideCoverHeight]);
+        cube([topPcbWidth + printerOffset*2,topPcbHeight + printerOffset*2,sideCoverHeight]);
         
         //edge cutting
+        //down 
         rotate([0,0,180])sideCaseInnerEdgeNegative();
-        translate([topPcbWidth+printerOffset*2,topPcbHeight+printerOffset*2,0])rotate([0,0,0])sideCaseInnerEdgeNegative();
-        translate([0,topPcbHeight+printerOffset*2,0])rotate([0,0,90])sideCaseInnerEdgeNegative();
-        translate([topPcbWidth+printerOffset*2,0,0])rotate([0,0,-90])sideCaseInnerEdgeNegative();
+        translate([topPcbWidth+printerOffset*3,topPcbHeight+printerOffset*3,0])rotate([0,0,0])sideCaseInnerEdgeNegative();
+        translate([0,topPcbHeight+printerOffset*3,0])rotate([0,0,90])sideCaseInnerEdgeNegative();
+        translate([topPcbWidth+printerOffset*3,0,0])rotate([0,0,-90])sideCaseInnerEdgeNegative();
     }
 }
 
