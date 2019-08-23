@@ -12,6 +12,12 @@ bottomPcbWidth = 45;
 bottomPcbHeight = 38.2;
 bottomEdgeDiameter = 4.5;
 
+//wristband
+wristbandHolderWidth = 6;
+wristbandHolderHeight = 0.4;
+wristbandHolderHeightAroundScrew = 0.2;
+wristbandHolderInsetY = 0.5;
+
 //contactPins
 contactPinWidth = 33;
 contactPinHeigth = 3;
@@ -80,7 +86,7 @@ displayBacklightPosX = 4.6;
 displayBacklightPosY = 1.3;
 
 //Heartbeat sensor
-sensorHeight = 3.7 + printerOffset;
+sensorHeight = 3.6 + printerOffset;
 sensorWidth = 5.8 + printerOffset;
 sensorPosX = 23.1 - printerOffset/2; //23
 sensorPosY = 2.5 -printerOffset/2; //2.8
@@ -161,14 +167,52 @@ pcbOverhangPosY = 18;
 
 //choose which elements to display
 //bottom cover
-    //bottomPcbCover();
+    bottomPcbCover();
 //top cover  
     translate([0,0,distancePcbs+bottomPcbThickness+topPcbThickness+caseThickness])topCover();
     //topCover();
 //side cover
-    //translate([0,0,caseThickness+printerOffset/2])sideCover();
+    translate([0,0,caseThickness+printerOffset/2])sideCover();
 
 module bottomPcbCover(){
+    difference(){
+        hull(){
+            difference(){
+                cube([bottomPcbWidth,bottomPcbHeight,caseThickness]);
+                //edge cutting
+                rotate([0,0,180])bottomEdgeNegative();
+                translate([bottomPcbWidth,bottomPcbHeight,0])rotate([0,0,0])bottomEdgeNegative();
+                translate([0,bottomPcbHeight,0])rotate([0,0,90])bottomEdgeNegative();
+                translate([bottomPcbWidth,0,0])rotate([0,0,-90])bottomEdgeNegative();
+            }
+            translate([0,0,caseThickness-0.1])sideCoverRaw(0.1);
+        }
+
+        //screw cuttings
+        translate([bottomScrewDistanceX,bottomScrewDistanceY,-wristbandHolderHeightAroundScrew])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,-wristbandHolderHeightAroundScrew])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,-wristbandHolderHeightAroundScrew])screwNegative(caseThickness);
+        translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY+ScrewDistanceY,-wristbandHolderHeightAroundScrew])screwNegative(caseThickness);
+    
+        //wristbandCuttings
+        translate([contactPinDistanceX,-contactPinHeigth,0])cube([contactPinWidth,bottomPcbHeight*2,caseThickness]);
+        
+        
+        translate([bottomScrewDistanceX,bottomScrewDistanceY-wristbandHolderInsetY,caseThickness-wristbandHolderHeight])cube([ScrewDistanceX,wristbandHolderWidth,wristbandHolderHeight]);
+        
+        translate([bottomScrewDistanceX,bottomScrewDistanceY + ScrewDistanceY - wristbandHolderWidth+wristbandHolderInsetY,caseThickness-wristbandHolderHeight])cube([ScrewDistanceX,wristbandHolderWidth,wristbandHolderHeight]);
+        
+        translate([0,bottomScrewDistanceY-wristbandHolderWidth/2,caseThickness-wristbandHolderHeightAroundScrew])cube([bottomPcbWidth,wristbandHolderWidth*1.5-wristbandHolderInsetY,wristbandHolderHeightAroundScrew]);
+        
+        translate([0,bottomScrewDistanceY+wristbandHolderWidth/2+ScrewDistanceY-(wristbandHolderWidth*1.5-wristbandHolderInsetY),caseThickness-wristbandHolderHeightAroundScrew])cube([bottomPcbWidth,wristbandHolderWidth*1.5-wristbandHolderInsetY,wristbandHolderHeightAroundScrew]);
+    
+    }
+    
+    //typeC overlap
+    translate([-sideCoverThickness-printerOffset,typeCPosY+printerOffset,caseThickness])cube([sideCoverThickness,typeCWidth-printerOffset*2,bottomPcbThickness]);
+}
+
+module bottomPcbCoverFull(){
     difference(){
         hull(){
             difference(){
@@ -211,6 +255,8 @@ module topEdgeNegative(){
         cylinder(r=topPcbEdgeDiameter, h=topCaseThickness);
     }
 }
+
+
 
 module topCover(){
     union(){
