@@ -166,6 +166,11 @@ pcbOverhangThickness = 2;
 pcbOverhangDepth = 1;
 pcbOverhangPosY = 18;
 
+//pcb spacer
+spacerThickness = 3;
+spacerHeight = distancePcbs;
+spacerInnerDiameter = 1.6 + printerOffset;
+
 //choose which elements to display
 //bottom cover
     //bottomPcbCover();
@@ -174,9 +179,13 @@ pcbOverhangPosY = 18;
     //topCover();
 //side cover
     //positionedSideCover();
-    sideCover();
+    //sideCover();
 //whole case
     //case();
+    
+//Spacer
+    //positionedSpacer();
+    pcbSpacerHex();
     
 
 module case(){
@@ -191,6 +200,10 @@ module positionedTopCover(){
 
 module positionedSideCover(){
     translate([0,0,caseThickness+printerOffset/2])sideCover();
+}
+
+module positionedSpacer(){
+    translate([bottomScrewDistanceX+ScrewDistanceX,bottomScrewDistanceY,caseThickness+bottomPcbThickness+spacerHeight/2+printerOffset/2])pcbSpacerHex();
 }
 
 module bottomPcbCover(){
@@ -490,5 +503,18 @@ module sideCoverRaw(height){
             translate([topPcbWidth++(printerOffset+sideCoverThickness)*2,0,0])rotate([0,0,-90])sideCaseOuterEdgeNegative();
         }
         sideCoverInnerNegative();
+    }
+}
+
+
+
+module pcbSpacerHex(){
+    difference(){
+        intersection(){
+            cube([spacerThickness,spacerThickness*3,spacerHeight], center = true);
+            rotate([0,0,120])cube([spacerThickness,spacerThickness*3,spacerHeight], center = true);
+            rotate([0,0,-120])cube([spacerThickness,spacerThickness*3,spacerHeight], center = true);
+        }
+        translate([0,0,-spacerHeight/2-1])cylinder(d=spacerInnerDiameter,h=spacerHeight+2);
     }
 }
