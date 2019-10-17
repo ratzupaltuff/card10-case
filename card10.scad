@@ -179,13 +179,13 @@ spacerInnerDiameter = 1.6 + printerOffset;
     //topCover();
 //side cover
     //positionedSideCover();
-    //sideCover();
+    sideCover();
 //whole case
     //case();
     
 //Spacer
     //positionedSpacer();
-    pcbSpacerHex();
+    //pcbSpacerHex();
     
 
 module case(){
@@ -449,6 +449,29 @@ module sideCoverInnerNegative(){
     }
 }
 
+semiTransparentThickness = 0.6;
+    semiTransparentHeight = 2;
+    semiTransparentWidth = 2;
+    ledDistanceToScrew = 4;
+
+module sideCoverLedNegative(){
+    
+    translate([-printerOffset+ledDistanceToScrew-semiTransparentWidth/2+bottomScrewDistanceX,topPcbOffset-printerOffset-sideCoverThickness+semiTransparentThickness+0.001,-semiTransparentHeight+sideCoverHeight-topPcbThickness]){
+        cube([semiTransparentWidth,sideCoverThickness-semiTransparentThickness,semiTransparentHeight]);
+    }
+    
+    translate([topPcbWidth-semiTransparentWidth+printerOffset-ledDistanceToScrew+semiTransparentWidth/2-bottomScrewDistanceX,topPcbOffset-printerOffset-sideCoverThickness+semiTransparentThickness+0.001,-semiTransparentHeight+sideCoverHeight-topPcbThickness]){
+        cube([semiTransparentWidth,sideCoverThickness-semiTransparentThickness,semiTransparentHeight]);
+    }
+    
+    translate([-printerOffset+ledDistanceToScrew-semiTransparentWidth/2+bottomScrewDistanceX,topPcbOffset+printerOffset+topPcbHeight-0.001,-semiTransparentHeight+sideCoverHeight-topPcbThickness]){
+        cube([semiTransparentWidth,sideCoverThickness-semiTransparentThickness,semiTransparentHeight]);
+    }
+    
+    translate([topPcbWidth-semiTransparentWidth+printerOffset-ledDistanceToScrew+semiTransparentWidth/2-bottomScrewDistanceX,topPcbOffset+printerOffset+topPcbHeight-0.001,-semiTransparentHeight+sideCoverHeight-topPcbThickness]){
+        cube([semiTransparentWidth,sideCoverThickness-semiTransparentThickness,semiTransparentHeight]);
+    }
+}
 
 module sideCover(){
     difference(){
@@ -473,6 +496,7 @@ module sideCover(){
             //spare for pcb interconnect overhangs
             translate([-printerOffset-pcbOverhangDepth,-topPcbOffset+pcbOverhangPosY,0])cube([bottomPcbWidth+printerOffset*2+pcbOverhangDepth*2,pcbOverhangThickness,bottomPcbThickness]);
         }
+        sideCoverLedNegative();
     }
 }
 
